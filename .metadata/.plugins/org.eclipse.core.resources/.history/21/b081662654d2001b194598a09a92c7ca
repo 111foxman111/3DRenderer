@@ -1,0 +1,9 @@
+package renderer.vector;
+
+public class Vector {
+	public double x, y, z;
+	
+	Vector() {
+		this.x = this.y = this.z = 0;
+	}
+}
