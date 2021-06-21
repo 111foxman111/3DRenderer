@@ -1,0 +1,29 @@
+package renderer.entity;
+
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import renderer.entity.builder.BasicEntityBuilder;
+
+public class EntityManager {
+	List<IEntity> entities;
+	
+	public EntityManager() {
+		this.entities = new ArrayList<IEntity>();
+	}
+	
+	public void init() {
+		IEntity cuboid = BasicEntityBuilder.createCuboid(5,20,22);
+	}
+	
+	public void update(Graphics g) {
+		for(IEntity entity : this.entities) {
+			entity.render(g);
+		}
+	}
+	
+	public void render() {
+		
+	}
+}

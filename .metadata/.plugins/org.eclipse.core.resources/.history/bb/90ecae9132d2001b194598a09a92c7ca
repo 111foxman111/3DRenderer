@@ -1,0 +1,18 @@
+package entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import renderer.shapes.cuboid.Cuboid;
+
+public class EntityManager {
+	List<IEntity> entities;
+	
+	public EntityManager() {
+		this.entities = new ArrayList<IEntity>();
+	}
+	
+	public void init() {
+		Cuboid cuboid = new Cuboid(5,20,22);
+	}
+}

@@ -1,0 +1,23 @@
+package renderer.shapes.cuboid;
+
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import entity.Entity;
+import renderer.point.Point3D;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
+
+public class Cuboid extends Entity {
+	public Cuboid(int dim, int size, int spacing) {
+		for(int i = 0; i < dim; i++) {
+			for(int j = 0; j < dim; j++) {
+				for(int k = 0; k < dim; k++) {
+					int index = (int) ((i*Math.pow(dim, 2))+(j*dim)+k);
+					meshes.add(Cube.generateCube(new Point3D((i-(dim/2))*spacing,(j-(dim/2))*spacing,(k-(dim/2))*spacing), size));
+				}
+			}
+		}
+	}
+}

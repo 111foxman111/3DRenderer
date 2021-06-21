@@ -1,0 +1,7 @@
+package renderer.point;
+
+import java.awt.Point;
+
+public class PointConverter {
+	public static Point convertPoint(MyPoint point)
+}

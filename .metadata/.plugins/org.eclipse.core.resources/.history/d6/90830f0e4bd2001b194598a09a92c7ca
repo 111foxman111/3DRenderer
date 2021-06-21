@@ -1,0 +1,57 @@
+package renderer.entity;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import renderer.entity.builder.BasicEntityBuilder;
+import renderer.input.ClickType;
+import renderer.input.Mouse;
+import renderer.point.Point3D;
+
+public class EntityManager {
+	private List<IEntity> entities;
+	private int initialX, initialY;
+	private static double mouseSensitivity = 2.5;
+	
+	public EntityManager() {
+		this.entities = new ArrayList<IEntity>();
+	}
+	
+	public void init() {
+		//this.entities.add(BasicEntityBuilder.createRubix(5,20,25, new Color(128)));
+		this.entities.add(BasicEntityBuilder.createDiamondEntity(new Point3D(0,0,0), 100, Color.CYAN));
+	}
+	
+	public void update(Mouse mouse) {
+		int x = mouse.getX();
+		int y = mouse.getY();
+		
+		int xDif = x - initialX;
+		int yDif = y - initialY;
+		
+		if(mouse.getButton() ==  ClickType.LeftClick) {
+			this.rotate(0, yDif/mouseSensitivity, xDif/mouseSensitivity);
+		}
+		
+		if(mouse.getButton() ==  ClickType.RightClick) {
+			this.rotate(xDif/mouseSensitivity, 0, 0);
+		}
+		
+		initialX = x;
+		initialY = y;
+	}
+	
+	public void render(Graphics g) {
+		for(IEntity entity : this.entities) {
+			entity.render(g);
+		}
+	}
+	
+	private void rotate(double xDegrees, double yDegrees, double zDegrees) {
+		for(IEntity entity : this.entities) {
+			entity.rotate(xDegrees, yDegrees, zDegrees);
+		}
+	}
+}

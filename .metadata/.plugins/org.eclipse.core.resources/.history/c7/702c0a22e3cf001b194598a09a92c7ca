@@ -1,0 +1,30 @@
+package renderer.shapes;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class Mesh {
+	private Face[] faces;
+	private Color color;
+	
+	public Mesh(Color color, Face... faces) {
+		this.color = color;
+		this.faces = faces;
+	}
+	
+	public void render(Graphics g) {
+		for(Face f : this.faces) {
+			f.render(g);
+		}
+	}
+	
+	public void sortFaces() {
+		
+	}
+	
+	private void setFaceColor() {
+		for(Face f : this.faces) {
+			f.setColor(this.color);
+		}
+	}
+}

@@ -1,0 +1,14 @@
+package renderer.shapes.cuboid;
+
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import entity.Entity;
+import renderer.point.Point3D;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
+
+public class Cuboid extends Entity {
+
+}

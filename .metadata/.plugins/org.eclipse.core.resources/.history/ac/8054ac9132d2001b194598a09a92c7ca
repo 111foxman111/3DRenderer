@@ -1,0 +1,72 @@
+package entity.builder;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import entity.Entity;
+import entity.IEntity;
+import renderer.point.Point3D;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
+import renderer.shapes.cuboid.Cube;
+
+public class BasicEntityBuilder {
+	public static IEntity createCubeEntity(Point3D p, int s) {
+		Point3D p1 = new Point3D(s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p2 = new Point3D(s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p3 = new Point3D(s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p4 = new Point3D(s/2+p.x,-s/2+p.y,s/2+p.z);
+		Point3D p5 = new Point3D(-s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p6 = new Point3D(-s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p7 = new Point3D(-s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p8 = new Point3D(-s/2+p.x,-s/2+p.y,s/2+p.z);
+		
+		Mesh mesh = new Mesh(
+				new Face(Color.RED,p1,p2,p3,p4),
+				new Face(Color.ORANGE,p5,p6,p7,p8),
+				new Face(Color.YELLOW,p1,p2,p6,p5),
+				new Face(Color.GREEN,p4,p3,p7,p8),
+				new Face(Color.BLUE,p1,p4,p8,p5),
+				new Face(Color.MAGENTA,p2,p3,p7,p6));
+		
+		List<Mesh> cube = new ArrayList<Mesh>();
+		cube.add(mesh);
+		
+		return new Entity(cube);
+	}
+	
+	public static Mesh createCubeMesh(Point3D p, int s) {
+		Point3D p1 = new Point3D(s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p2 = new Point3D(s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p3 = new Point3D(s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p4 = new Point3D(s/2+p.x,-s/2+p.y,s/2+p.z);
+		Point3D p5 = new Point3D(-s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p6 = new Point3D(-s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p7 = new Point3D(-s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p8 = new Point3D(-s/2+p.x,-s/2+p.y,s/2+p.z);
+		
+		Mesh mesh = new Mesh(
+				new Face(Color.RED,p1,p2,p3,p4),
+				new Face(Color.ORANGE,p5,p6,p7,p8),
+				new Face(Color.YELLOW,p1,p2,p6,p5),
+				new Face(Color.GREEN,p4,p3,p7,p8),
+				new Face(Color.BLUE,p1,p4,p8,p5),
+				new Face(Color.MAGENTA,p2,p3,p7,p6));
+		
+		return mesh;
+	}
+	
+	public static IEntity createCuboid(int dim, int size, int spacing) {
+		List<Mesh> meshes = new ArrayList<Mesh>();
+		for(int i = 0; i < dim; i++) {
+			for(int j = 0; j < dim; j++) {
+				for(int k = 0; k < dim; k++) {
+					int index = (int) ((i*Math.pow(dim, 2))+(j*dim)+k);
+					meshes.add(Cube.generateCube(new Point3D((i-(dim/2))*spacing,(j-(dim/2))*spacing,(k-(dim/2))*spacing), size));
+				}
+			}
+		}
+		return new Entity(meshes);
+	}
+}

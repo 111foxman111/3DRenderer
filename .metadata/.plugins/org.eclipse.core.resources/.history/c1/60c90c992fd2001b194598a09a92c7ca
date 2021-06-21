@@ -1,0 +1,38 @@
+package renderer.shapes.cuboid;
+
+import java.awt.Graphics;
+
+import renderer.point.Point3D;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
+
+public class Cuboid {
+	Mesh[] cubes;
+	
+	public Cuboid(int dim, int size, int spacing) {
+		cubes = new Mesh[(int) Math.pow(dim, 3)];
+		
+		for(int i = 0; i < dim; i++) {
+			for(int j = 0; j < dim; j++) {
+				for(int k = 0; k < dim; k++) {
+					int index = (int) ((i*Math.pow(dim, 2))+(j*dim)+k);
+					cubes[index] = Cube.generateCube(new Point3D((i-(dim/2))*spacing,(j-(dim/2))*spacing,(k-(dim/2))*spacing), size);
+				}
+			}
+		}
+	}
+	
+	public void render(Graphics g) {
+		cubes = Mesh.sortMeshes(cubes);
+		
+		for(Mesh m : cubes) {
+			m.render(g);
+		}
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees) {
+		for(Mesh m : cubes) {
+			m.rotate(xDegrees, yDegrees, zDegrees);
+		}
+	}
+}

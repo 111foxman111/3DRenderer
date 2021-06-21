@@ -1,0 +1,172 @@
+package renderer;
+
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+
+import renderer.input.Mouse;
+import renderer.point.Point3D;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
+import renderer.shapes.Prefabs;
+
+public class Display extends Canvas implements Runnable {
+	private static final long serialVersionUID = 1L;
+	
+	private Thread thread;
+	private JFrame frame;
+	private static String title = "Liquified Pain";
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
+	private static final int FPS = 60;
+	private boolean running = false;
+	
+	Mesh[] meshes = new Mesh[27];
+	
+	private Mouse mouse;
+	
+	public Display() {
+		this.frame = new JFrame();
+		
+		Dimension size = new Dimension(WIDTH,HEIGHT);
+		this.setPreferredSize(size);
+		
+		this.mouse = new Mouse();
+		
+		this.addMouseListener(this.mouse);
+		this.addMouseMotionListener(this.mouse);
+		this.addMouseWheelListener(this.mouse);
+	}
+	
+	public static void main(String[] args) {
+		Display display = new Display();
+		display.frame.setTitle(title);
+		display.frame.add(display);
+		display.frame.pack();
+		display.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		display.frame.setLocationRelativeTo(null);
+		display.frame.setResizable(false);
+		display.frame.setVisible(true);
+		
+		display.start();
+	}
+	
+	public synchronized void start() {
+		this.running = true;
+		this.thread = new Thread(this,"Display");
+		this.thread.start();
+	}
+	
+	public synchronized void stop() {
+		this.running = false;
+		try {
+			this.thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void run() {
+		long lastTime = System.nanoTime();
+		long timer = System.currentTimeMillis();
+		double delta = 0;
+		final double ns = 1000000000.0 / FPS;
+		double frames = 0;
+		
+		init();
+		
+		while(running) {
+			long now = System.nanoTime();
+			delta += (now-lastTime) / ns;
+			lastTime = now;
+			while(delta >= 1) {
+				update();
+				delta--;
+				render();
+				frames++; 
+			}
+			
+			if(System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				this.frame.setTitle(title+" | "+frames+"FPS");
+				frames = 0;
+			}
+		}
+		stop();
+	}
+	
+	private void init() {
+		/*
+		int s = 100;
+		Point3D p1 = new Point3D(s/2,-s/2,-s/2);
+		Point3D p2 = new Point3D(s/2,s/2,-s/2);
+		Point3D p3 = new Point3D(s/2,s/2,s/2);
+		Point3D p4 = new Point3D(s/2,-s/2,s/2);
+		Point3D p5 = new Point3D(-s/2,-s/2,-s/2);
+		Point3D p6 = new Point3D(-s/2,s/2,-s/2);
+		Point3D p7 = new Point3D(-s/2,s/2,s/2);
+		Point3D p8 = new Point3D(-s/2,-s/2,s/2);
+		mesh = new Mesh(
+				new Face(Color.RED,p1,p2,p3,p4),
+				new Face(Color.ORANGE,p5,p6,p7,p8),
+				new Face(Color.YELLOW,p1,p2,p6,p5),
+				new Face(Color.GREEN,p4,p3,p7,p8),
+				new Face(Color.BLUE,p1,p4,p8,p5),
+				new Face(Color.MAGENTA,p2,p3,p7,p6));
+				*/
+		int s = 55;
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 5; j++) {
+				for(int k = 0; k < 10; k++) {
+					int index = (i*9)+(j*3)+k;
+					meshes[index] = Prefabs.generateCube(new Point3D(i*(s-1),j*(s-1),k*(s-1)), 20);
+				}
+			}
+		}
+	}
+		
+		
+
+	private void render() {
+		BufferStrategy bs = this.getBufferStrategy();
+		if(bs == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
+		
+		Graphics g = bs.getDrawGraphics();
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0,0,WIDTH,HEIGHT);
+		
+		meshes = Mesh.sortMeshes(meshes);
+		
+		for(Mesh m : meshes) {
+			m.render(g);
+		}
+		
+		g.dispose();
+		bs.show();
+	}
+	
+	private void update() {
+		if(this.mouse.getButton() == 1) {}
+		
+		for(Mesh m : meshes) {
+			m.rotate(1, 1, 0);
+		}
+		
+		//System.out.println(this.mouse.getX() + "," + this.mouse.getY());
+		//System.out.println(this.mouse.getButton());
+		
+		this.mouse.resetButton();
+	}
+
+}

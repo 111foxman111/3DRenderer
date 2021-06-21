@@ -1,0 +1,20 @@
+package renderer.shapes;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class Tetrahedron {
+	private Polygon3D[] polygons;
+	private Color color;
+	
+	public Tetrahedron(Color color, Polygon3D... polygons) {
+		this.color = color;
+		this.polygons = polygons;
+	}
+	
+	public void render(Graphics g) {
+		for(Polygon3D poly : this.polygons) {
+			poly.render(g);
+		}
+	}
+}

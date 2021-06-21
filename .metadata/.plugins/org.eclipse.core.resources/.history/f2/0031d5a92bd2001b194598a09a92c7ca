@@ -1,0 +1,28 @@
+package renderer.shapes;
+
+import java.awt.Color;
+
+import renderer.point.Point3D;
+
+public class Prefabs {
+	public static Mesh generateCube(Point3D p, int s) {
+		Point3D p1 = new Point3D(s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p2 = new Point3D(s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p3 = new Point3D(s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p4 = new Point3D(s/2+p.x,-s/2+p.y,s/2+p.z);
+		Point3D p5 = new Point3D(-s/2+p.x,-s/2+p.y,-s/2+p.z);
+		Point3D p6 = new Point3D(-s/2+p.x,s/2+p.y,-s/2+p.z);
+		Point3D p7 = new Point3D(-s/2+p.x,s/2+p.y,s/2+p.z);
+		Point3D p8 = new Point3D(-s/2+p.x,-s/2+p.y,s/2+p.z);
+		
+		Mesh mesh = new Mesh(
+				new Face(Color.RED,p1,p2,p3,p4),
+				new Face(Color.ORANGE,p5,p6,p7,p8),
+				new Face(Color.YELLOW,p1,p2,p6,p5),
+				new Face(Color.GREEN,p4,p3,p7,p8),
+				new Face(Color.BLUE,p1,p4,p8,p5),
+				new Face(Color.MAGENTA,p2,p3,p7,p6));
+		
+		return mesh;
+	}
+}
