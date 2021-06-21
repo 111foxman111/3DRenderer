@@ -11,7 +11,6 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	public int mouseX = -1;
 	public int mouseY = -1;
 	public int mouseB = -1;
-	public int mouseWheel = 0;
 	
 	public int getX() {
 		return this.mouseX;
@@ -38,7 +37,6 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		mouseWheel = e.getWheelRotation();
 	}
 
 	@Override

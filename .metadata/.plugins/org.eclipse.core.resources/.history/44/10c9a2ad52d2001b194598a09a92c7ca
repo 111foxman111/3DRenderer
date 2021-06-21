@@ -5,10 +5,18 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFrame;
 
 import renderer.entity.EntityManager;
+import renderer.input.ClickType;
 import renderer.input.Mouse;
+import renderer.point.Point3D;
+import renderer.point.PointConverter;
+import renderer.shapes.Face;
+import renderer.shapes.Mesh;
 
 public class Display extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;

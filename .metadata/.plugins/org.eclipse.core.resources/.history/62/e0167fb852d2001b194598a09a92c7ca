@@ -7,6 +7,7 @@ import java.util.List;
 import renderer.entity.Entity;
 import renderer.entity.IEntity;
 import renderer.point.Point3D;
+import renderer.point.PointConverter;
 import renderer.shapes.Face;
 import renderer.shapes.Mesh;
 

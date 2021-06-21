@@ -9,7 +9,6 @@ import renderer.entity.builder.BasicEntityBuilder;
 import renderer.input.ClickType;
 import renderer.input.Mouse;
 import renderer.point.Point3D;
-import renderer.point.PointConverter;
 
 public class EntityManager {
 	private List<IEntity> entities;
@@ -26,8 +25,6 @@ public class EntityManager {
 	}
 	
 	public void update(Mouse mouse) {
-		double sensitivity = 0.05;
-		
 		int x = mouse.getX();
 		int y = mouse.getY();
 		
@@ -41,8 +38,6 @@ public class EntityManager {
 		if(mouse.getButton() ==  ClickType.RightClick) {
 			this.rotate(xDif/mouseSensitivity, 0, 0);
 		}
-		
-		PointConverter.scale += mouse.mouseWheel / (1/sensitivity);
 		
 		initialX = x;
 		initialY = y;
