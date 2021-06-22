@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import renderer.vector.Vector3D;
+
 public class Mesh {
 	private Face[] faces;
 	private Color color;
@@ -33,9 +35,23 @@ public class Mesh {
 		}
 	}
 	
-	public void rotate(double xDegrees, double yDegrees, double zDegrees) {
+	public void translate(Vector3D v) {
 		for(Face f : faces) {
-			f.rotate(xDegrees, yDegrees, zDegrees);
+			f.translate(v.x, v.y, v.z);
+		}
+		this.sortFaces();
+	}
+	
+	public void trueTranslate(Vector3D v) {
+		for(Face f : faces) {
+			f.trueTranslate(v);
+		}
+		this.sortFaces();
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(Face f : faces) {
+			f.rotate(xDegrees, yDegrees, zDegrees, lightVector);
 		}
 		this.sortFaces();
 	}
@@ -73,6 +89,12 @@ public class Mesh {
 		}
 		
 		return sum / this.faces.length;
+	}
+	
+	public void setLighting(Vector3D lightVector) {
+		for(Face f : faces) {
+			f.setLighting(lightVector);
+		}
 	}
 	
 	private void setFaceColor() {

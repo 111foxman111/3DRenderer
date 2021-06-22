@@ -1,0 +1,5 @@
+package renderer.input;
+
+public class Keyboard {
+
+}

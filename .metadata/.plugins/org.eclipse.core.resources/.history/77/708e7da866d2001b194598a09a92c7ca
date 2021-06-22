@@ -1,0 +1,9 @@
+package renderer.world;
+
+public class Player {
+	private Camera camera;
+	
+	public Player() {
+		
+	}
+}

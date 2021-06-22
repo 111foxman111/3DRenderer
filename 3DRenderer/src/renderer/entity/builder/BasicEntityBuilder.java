@@ -11,30 +11,6 @@ import renderer.shapes.Face;
 import renderer.shapes.Mesh;
 
 public class BasicEntityBuilder {
-	public static IEntity createCubeEntity(Point3D p, int s) {
-		Point3D p1 = new Point3D(s/2+p.x,-s/2+p.y,-s/2+p.z);
-		Point3D p2 = new Point3D(s/2+p.x,s/2+p.y,-s/2+p.z);
-		Point3D p3 = new Point3D(s/2+p.x,s/2+p.y,s/2+p.z);
-		Point3D p4 = new Point3D(s/2+p.x,-s/2+p.y,s/2+p.z);
-		Point3D p5 = new Point3D(-s/2+p.x,-s/2+p.y,-s/2+p.z);
-		Point3D p6 = new Point3D(-s/2+p.x,s/2+p.y,-s/2+p.z);
-		Point3D p7 = new Point3D(-s/2+p.x,s/2+p.y,s/2+p.z);
-		Point3D p8 = new Point3D(-s/2+p.x,-s/2+p.y,s/2+p.z);
-		
-		Mesh mesh = new Mesh(
-				new Face(Color.RED,p1,p2,p3,p4),
-				new Face(Color.ORANGE,p5,p6,p7,p8),
-				new Face(Color.YELLOW,p1,p2,p6,p5),
-				new Face(Color.GREEN,p4,p3,p7,p8),
-				new Face(Color.BLUE,p1,p4,p8,p5),
-				new Face(Color.MAGENTA,p2,p3,p7,p6));
-		
-		List<Mesh> meshes = new ArrayList<Mesh>();
-		meshes.add(mesh);
-		
-		return new Entity(meshes);
-	}
-	
 	public static Mesh createCubeMesh(Point3D p, int s) {
 		Point3D p1 = new Point3D(s/2+p.x,-s/2+p.y,-s/2+p.z);
 		Point3D p2 = new Point3D(s/2+p.x,s/2+p.y,-s/2+p.z);
@@ -56,6 +32,15 @@ public class BasicEntityBuilder {
 		return mesh;
 	}
 	
+	public static IEntity createCube(Point3D p, int s) {
+		Mesh mesh = createCubeMesh(p, s);
+		
+		List<Mesh> meshes = new ArrayList<Mesh>();
+		meshes.add(mesh);
+		
+		return new Entity(meshes);
+	}
+	
 	public static IEntity createRubix(int dim, int size, int spacing) {
 		List<Mesh> meshes = new ArrayList<Mesh>();
 		for(int i = 0; i < dim; i++) {
@@ -68,7 +53,7 @@ public class BasicEntityBuilder {
 		return new Entity(meshes);
 	}
 	
-	public static IEntity createDiamondEntity(Point3D center, int s, int edges, Color color) {
+	public static IEntity createDiamond(Point3D center, int s, int edges, Color color) {
 		List<Mesh> meshes = new ArrayList<Mesh>();
 		
 		double innerRatio = 0.8; //Size of inner circle compared to outer circle
@@ -94,9 +79,26 @@ public class BasicEntityBuilder {
 		}
 		faces[edges * 2] = new Face(color, innerPoints);
 		
-		Mesh mesh = new Mesh(color, true, faces);
+		Mesh mesh = new Mesh(color, false, faces);
 		meshes.add(mesh);
 		
 		return new Entity(meshes);
 	}
+	
+	/*
+	public static IEntity createEntitySphere(Point3D center, int s, Color color) {
+		List<Mesh> meshes = new ArrayList<Mesh>();
+		List<Face> faces = new ArrayList<Face>();
+		
+		
+		
+		Face[] faceArray = new Face[faces.size()];
+		faceArray = faces.toArray(faceArray);
+		
+		Mesh mesh = new Mesh(color, false, faceArray);
+		meshes.add(mesh);
+		
+		return new Entity(meshes);
+	}
+	*/
 }

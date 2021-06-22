@@ -1,0 +1,44 @@
+package renderer.entity;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import renderer.entity.builder.BasicEntityBuilder;
+import renderer.input.ClickType;
+import renderer.input.UserInput;
+import renderer.point.Point3D;
+import renderer.point.PointConverter;
+import renderer.vector.Vector3D;
+
+public class EntityManager {
+	private List<IEntity> entities;
+	
+	public EntityManager() {
+		this.entities = new ArrayList<IEntity>();
+	}
+	
+	public void init(UserInput userInput) {
+		//this.entities.add(BasicEntityBuilder.createRubix(3,20,22));
+		 this.entities.add(BasicEntityBuilder.createDiamondEntity(new Point3D(0,0,0), 100, 10, Color.CYAN));
+	}
+	
+	public void render(Graphics g) {
+		for(IEntity entity : this.entities) {
+			entity.render(g);
+		}
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(IEntity entity : this.entities) {
+			entity.rotate(xDegrees, yDegrees, zDegrees, lightVector);
+		}
+	}
+	
+	public void setLighting(Vector3D lightVector) {
+		for(IEntity e : this.entities) {
+			e.setLighting(lightVector);
+		}
+	}
+}

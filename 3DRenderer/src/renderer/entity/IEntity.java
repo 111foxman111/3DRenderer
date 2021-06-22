@@ -1,9 +1,22 @@
 package renderer.entity;
 
 import java.awt.Graphics;
+import java.util.List;
+
+import renderer.point.Point3D;
+import renderer.shapes.Mesh;
+import renderer.vector.Vector3D;
 
 public interface IEntity {
+	List<Mesh> meshes = null;
+
 	void render(Graphics g);
 	
-	void rotate(double xDegrees, double yDegrees, double zDegrees);
+	void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector);
+
+	void setLighting(Vector3D lightVector);
+
+	void translate(Vector3D v);
+	
+	void rotateAP(Point3D p, double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector);
 }

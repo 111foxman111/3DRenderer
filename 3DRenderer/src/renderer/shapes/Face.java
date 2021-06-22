@@ -11,50 +11,78 @@ import java.util.List;
 
 import renderer.point.Point3D;
 import renderer.point.PointConverter;
+import renderer.vector.Vector3D;
 
 public class Face {
-	private Color color;
+	private static final double AMBIENT_LIGHTING = 0.5;
+	
+	private Color baseColor, lightColor;
 	private Point3D[] points;
+	private boolean visible;
 	
 	public Face(Color color, Point3D... points) {
 		this.points = new Point3D[points.length];
 		for(int i = 0; i < points.length; i++) {
-			this.color = color;
+			this.baseColor = this.lightColor = color;
 			Point3D p = points[i];
 			this.points[i] = new Point3D(p.x,p.y,p.z);
 		}
+		this.updateVisibility();
 	}
 	
 	public void render(Graphics g) {
+		if(!this.visible) return;
+		
 		Polygon poly = new Polygon();
 		for(int i = 0; i < points.length; i++) {
 			Point p = PointConverter.convertPoint(points[i]);
 			poly.addPoint(p.x, p.y);
 		}
-		g.setColor(this.color);
+		g.setColor(this.lightColor);
 		g.fillPolygon(poly);
 	}
 	
-	public void rotate(double xDegrees, double yDegrees, double zDegrees) {
+	public void translate(double x, double y, double z) {
+		for(Point3D p : points) {
+			p.xOffset += x;
+			p.yOffset += y;
+			p.zOffset += z;
+		}
+		this.updateVisibility();
+	}
+	
+	public void trueTranslate(Vector3D v) {
+		for(Point3D p : points) {
+			p.x += v.x;
+			p.y += v.y;
+			p.z += v.z;
+		}
+		this.updateVisibility();
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
 		for(Point3D p : points) {
 			PointConverter.rotateAxisX(p, xDegrees);
 			PointConverter.rotateAxisY(p, yDegrees);
 			PointConverter.rotateAxisZ(p, zDegrees);
 		}
+		
+		this.updateVisibility();
+		this.setLighting(lightVector);
 	}
 	
 	public double getAverageX() {
 		double sum = 0;
 		
 		for(Point3D p : this.points) {
-			sum += p.x;
+			sum += p.x + p.xOffset;
 		}
 		
 		return sum / this.points.length;
 	}
 	
 	public void setColor(Color color) {
-		this.color = color;
+		this.baseColor = this.lightColor = color;
 	}
 	
 	public static Face[] sortFaces(Face[] faces) {
@@ -67,6 +95,12 @@ public class Face {
 		Collections.sort(facesList, new Comparator<Face>() {
 			@Override
 			public int compare(Face p1, Face p2) {
+				Point3D p1Average = p1.getAveragePoint();
+				Point3D p2Average = p2.getAveragePoint();
+				double p1Dist = Point3D.dist(p1Average, Point3D.origin);
+				double p2Dist = Point3D.dist(p2Average, Point3D.origin);
+				double diff = p1Dist - p2Dist;
+				if(diff == 0) { return 0; }
 				return p2.getAverageX() - p1.getAverageX() < 0 ? 1 : -1;
 			}
 		});
@@ -76,5 +110,53 @@ public class Face {
 		}
 		
 		return faces;
+	}
+	
+	public void setLighting(Vector3D lightVector) {
+		if(this.points.length < 3) { return; }
+		
+		double lightRatio;
+		
+		Vector3D v1 = new Vector3D(this.points[0],this.points[1]);
+		Vector3D v2 = new Vector3D(this.points[1],this.points[2]);
+		Vector3D normal = Vector3D.normalize(Vector3D.cross(v2, v1)); //May need to switch order of vectors
+		double dot = Vector3D.dot(normal, lightVector);
+		double sign = dot < 0 ? 1 : -1;
+		dot *= sign * dot;
+		dot = (dot + 1) / 2 * (1 - AMBIENT_LIGHTING); //Makes dot range 0 to 0.8
+		
+		lightRatio = Math.min(1, Math.max(0, AMBIENT_LIGHTING + dot));
+		this.updateLightingColor(lightRatio);
+	}
+	
+	public boolean isVisible() {
+		return this.visible;
+	}
+	
+	private void updateVisibility() {
+		this.visible = this.getAverageX() < 0;
+	}
+	
+	private void updateLightingColor(double lightRatio) {
+		int r = (int) (this.baseColor.getRed() * lightRatio);
+		int g = (int) (this.baseColor.getGreen() * lightRatio);
+		int b = (int) (this.baseColor.getBlue() * lightRatio);
+		this.lightColor = new Color(r,g,b);
+	}
+	
+	private Point3D getAveragePoint() {
+		double x = 0;
+		double y = 0;
+		double z = 0;
+		for(Point3D p : this.points) {
+			x += p.x + p.xOffset;
+			y += p.y + p.yOffset;
+			z += p.z + p.zOffset;
+		}
+		x /= this.points.length;
+		y /= this.points.length;
+		z /= this.points.length;
+		
+		return new Point3D(x, y, z);
 	}
 }

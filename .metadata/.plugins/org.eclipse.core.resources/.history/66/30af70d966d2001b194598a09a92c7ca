@@ -1,0 +1,11 @@
+package renderer.world;
+
+import renderer.point.Point3D;
+
+public class Player {
+	private Camera camera;
+	
+	public Player() {
+		this.camera = new Camera(new Point3D(0,0,0));
+	}
+}

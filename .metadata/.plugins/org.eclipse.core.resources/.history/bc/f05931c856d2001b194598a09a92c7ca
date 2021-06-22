@@ -1,0 +1,80 @@
+package renderer.shapes;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import renderer.point.Point3D;
+import renderer.point.PointConverter;
+
+public class Face {
+	private Color color;
+	private Point3D[] points;
+	
+	public Face(Color color, Point3D... points) {
+		this.points = new Point3D[points.length];
+		for(int i = 0; i < points.length; i++) {
+			this.color = color;
+			Point3D p = points[i];
+			this.points[i] = new Point3D(p.x,p.y,p.z);
+		}
+	}
+	
+	public void render(Graphics g) {
+		Polygon poly = new Polygon();
+		for(int i = 0; i < points.length; i++) {
+			Point p = PointConverter.convertPoint(points[i]);
+			poly.addPoint(p.x, p.y);
+		}
+		g.setColor(this.color);
+		g.fillPolygon(poly);
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(Point3D p : points) {
+			PointConverter.rotateAxisX(p, xDegrees);
+			PointConverter.rotateAxisY(p, yDegrees);
+			PointConverter.rotateAxisZ(p, zDegrees);
+		}
+	}
+	
+	public double getAverageX() {
+		double sum = 0;
+		
+		for(Point3D p : this.points) {
+			sum += p.x;
+		}
+		
+		return sum / this.points.length;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public static Face[] sortFaces(Face[] faces) {
+		List<Face> facesList = new ArrayList<Face>();
+		
+		for(Face face : faces) {
+			facesList.add(face);
+		}
+		
+		Collections.sort(facesList, new Comparator<Face>() {
+			@Override
+			public int compare(Face p1, Face p2) {
+				return p2.getAverageX() - p1.getAverageX() < 0 ? 1 : -1;
+			}
+		});
+		
+		for(int i = 0; i < faces.length; i++) {
+			faces[i] = facesList.get(i);
+		}
+		
+		return faces;
+	}
+}

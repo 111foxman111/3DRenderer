@@ -1,51 +1,25 @@
 package renderer.entity;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
 import renderer.entity.builder.BasicEntityBuilder;
-import renderer.input.ClickType;
-import renderer.input.Mouse;
+import renderer.input.UserInput;
 import renderer.point.Point3D;
-import renderer.point.PointConverter;
+import renderer.vector.Vector3D;
 
 public class EntityManager {
-	private List<IEntity> entities;
-	private int initialX, initialY;
-	private static double mouseSensitivity = 2.5;
+	public List<IEntity> entities;
 	
 	public EntityManager() {
 		this.entities = new ArrayList<IEntity>();
 	}
 	
-	public void init() {
-		//this.entities.add(BasicEntityBuilder.createRubix(3,20,22));
-		 this.entities.add(BasicEntityBuilder.createDiamondEntity(new Point3D(0,0,0), 100, 10, Color.CYAN));
-	}
-	
-	public void update(Mouse mouse) {
-		double sensitivity = 0.05;
-		
-		int x = mouse.getX();
-		int y = mouse.getY();
-		
-		int xDif = x - initialX;
-		int yDif = y - initialY;
-		
-		if(mouse.getButton() ==  ClickType.LeftClick) {
-			this.rotate(0, yDif/mouseSensitivity, xDif/mouseSensitivity);
-		}
-		
-		if(mouse.getButton() ==  ClickType.RightClick) {
-			this.rotate(xDif/mouseSensitivity, 0, 0);
-		}
-		
-		PointConverter.scale += mouse.mouseWheel / (1/sensitivity);
-		
-		initialX = x;
-		initialY = y;
+	public void init(UserInput userInput, Vector3D lightVector) {
+		this.entities.add(BasicEntityBuilder.createRubix(3,100,105));
+		//this.entities.add(BasicEntityBuilder.createDiamondEntity(new Point3D(0,0,0), 100, 10, Color.CYAN));
+		this.setLighting(lightVector);
 	}
 	
 	public void render(Graphics g) {
@@ -54,9 +28,27 @@ public class EntityManager {
 		}
 	}
 	
-	private void rotate(double xDegrees, double yDegrees, double zDegrees) {
+	public void translate(Vector3D v) {
 		for(IEntity entity : this.entities) {
-			entity.rotate(xDegrees, yDegrees, zDegrees);
+			entity.translate(v);
+		}
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(IEntity entity : this.entities) {
+			entity.rotate(xDegrees, yDegrees, zDegrees, lightVector);
+		}
+	}
+	
+	public void rotateAP(Point3D p, double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(IEntity entity : this.entities) {
+			entity.rotateAP(p, xDegrees, yDegrees, zDegrees, lightVector);
+		}
+	}
+	
+	public void setLighting(Vector3D lightVector) {
+		for(IEntity e : this.entities) {
+			e.setLighting(lightVector);
 		}
 	}
 }

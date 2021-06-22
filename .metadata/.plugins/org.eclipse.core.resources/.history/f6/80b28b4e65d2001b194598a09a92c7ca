@@ -1,0 +1,14 @@
+package renderer.world;
+
+import renderer.input.UserInput;
+import renderer.vector.Vector3D;
+
+public class WorldManager {
+	private int initialX, initialY;
+	private static double mouseSensitivity = 2.5;
+	private UserInput userInput;
+	
+	public void init(UserInput userInput) {
+		this.userInput = userInput;
+	}
+}

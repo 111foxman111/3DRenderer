@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
-import renderer.entity.EntityManager;
-import renderer.input.Mouse;
+import renderer.input.UserInput;
+import renderer.world.WorldManager;
 
 public class Display extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -21,23 +21,24 @@ public class Display extends Canvas implements Runnable {
 	private static final int FPS = 60;
 	private boolean running = false;
 	
-	private EntityManager entityManager;
+	private WorldManager worldManager;
 	
-	private Mouse mouse;
+	private UserInput userInput;
 	
 	public Display() {
 		this.frame = new JFrame();
 		
-		this.entityManager = new EntityManager();
+		this.worldManager = new WorldManager();
 		
 		Dimension size = new Dimension(WIDTH,HEIGHT);
 		this.setPreferredSize(size);
 		
-		this.mouse = new Mouse();
+		this.userInput = new UserInput();
 		
-		this.addMouseListener(this.mouse);
-		this.addMouseMotionListener(this.mouse);
-		this.addMouseWheelListener(this.mouse);
+		this.addMouseListener(this.userInput.mouse);
+		this.addMouseMotionListener(this.userInput.mouse);
+		this.addMouseWheelListener(this.userInput.mouse);
+		this.addKeyListener(this.userInput.keyboard);
 	}
 	
 	public static void main(String[] args) {
@@ -76,7 +77,7 @@ public class Display extends Canvas implements Runnable {
 		final double ns = 1000000000.0 / FPS;
 		double frames = 0;
 		
-		this.entityManager.init();
+		this.worldManager.init(userInput);
 		
 		while(running) {
 			long now = System.nanoTime();
@@ -110,14 +111,14 @@ public class Display extends Canvas implements Runnable {
 		g.setColor(Color.BLACK);
 		g.fillRect(0,0,WIDTH,HEIGHT);
 		
-		this.entityManager.render(g);
+		this.worldManager.entityManager.render(g);
 		
 		g.dispose();
 		bs.show();
 	}
 	
 	private void update() {
-		this.entityManager.update(this.mouse);
+		this.worldManager.update();
 	}
 
 }

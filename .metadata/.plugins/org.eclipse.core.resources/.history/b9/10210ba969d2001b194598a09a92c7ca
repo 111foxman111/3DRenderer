@@ -1,0 +1,56 @@
+package renderer.world;
+
+import renderer.entity.EntityManager;
+import renderer.input.ClickType;
+import renderer.input.UserInput;
+import renderer.point.PointConverter;
+import renderer.vector.Vector3D;
+
+public class WorldManager {
+	private int initialX, initialY;
+	private static double mouseSensitivity = 2.5;
+	private Vector3D lightVector = Vector3D.normalize(new Vector3D(-1,1,1));
+	private UserInput userInput;
+	private Player player;
+	public EntityManager entityManager;
+	
+	public WorldManager() {
+		entityManager = new EntityManager();
+	}
+	
+	public void init(UserInput userInput) {
+		this.userInput = userInput;
+		this.player = new Player();
+		this.entityManager.init(userInput, lightVector);
+	}
+	
+	public void update() {
+		double sensitivity = 0.05;
+		
+		int x = userInput.mouse.getX();
+		int y = userInput.mouse.getY();
+		
+		int xDif = x - initialX;
+		int yDif = y - initialY;
+		
+		if(userInput.mouse.getButton() ==  ClickType.LeftClick) {
+			this.entityManager.rotate(0, yDif/mouseSensitivity, xDif/mouseSensitivity, lightVector);
+		}
+		
+		if(userInput.mouse.getButton() ==  ClickType.RightClick) {
+			this.entityManager.rotate(xDif/mouseSensitivity, 0, 0, lightVector);
+		}
+		
+		PointConverter.scale += userInput.mouse.mouseWheel / (1/sensitivity);
+		
+		if(this.userInput.keyboard.getLeft()) {
+			player.moveLeft(entityManager);
+		}
+		
+		this.userInput.mouse.mouseWheel = 0;
+		this.userInput.keyboard.update();
+		
+		initialX = x;
+		initialY = y;
+	}
+}

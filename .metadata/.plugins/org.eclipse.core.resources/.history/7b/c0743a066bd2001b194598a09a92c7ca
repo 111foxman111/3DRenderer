@@ -1,0 +1,108 @@
+package renderer.shapes;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import renderer.vector.Vector3D;
+
+public class Mesh {
+	private Face[] faces;
+	private Color color;
+	
+	public Mesh(Face... faces) {
+		this.color = Color.WHITE;
+		this.faces = faces;
+	}
+	
+	public Mesh(Color color, boolean decayColor, Face... faces) {
+		this.color = color;
+		this.faces = faces;
+		
+		if(decayColor) {
+			this.colorDecay();
+		} else {
+			this.setFaceColor();
+		}
+	}
+	
+	public void render(Graphics g) {
+		for(Face f : this.faces) {
+			f.render(g);
+		}
+	}
+	
+	public void translate(Vector3D v) {
+		for(Face f : faces) {
+			f.translate(v.x, v.y, v.z);
+		}
+	}
+	
+	public void rotate(double xDegrees, double yDegrees, double zDegrees, Vector3D lightVector) {
+		for(Face f : faces) {
+			f.rotate(xDegrees, yDegrees, zDegrees, lightVector);
+		}
+		this.sortFaces();
+	}
+	
+	public void sortFaces() {
+		 Face.sortFaces(this.faces);
+	}
+	
+	public static Mesh[] sortMeshes(Mesh[] meshes) {
+		List<Mesh> meshesList = new ArrayList<Mesh>();
+		
+		for(Mesh mesh : meshes) {
+			meshesList.add(mesh);
+		}
+		
+		Collections.sort(meshesList, new Comparator<Mesh>() {
+			@Override
+			public int compare(Mesh p1, Mesh p2) {
+				return p2.getAverageX() - p1.getAverageX() < 0 ? 1 : -1;
+			}
+		});
+		
+		for(int i = 0; i < meshes.length; i++) {
+			meshes[i] = meshesList.get(i);
+		}
+		
+		return meshes;
+	}
+	
+	public double getAverageX() {
+		double sum = 0;
+		
+		for(Face f : this.faces) {
+			sum += f.getAverageX();
+		}
+		
+		return sum / this.faces.length;
+	}
+	
+	public void setLighting(Vector3D lightVector) {
+		for(Face f : faces) {
+			f.setLighting(lightVector);
+		}
+	}
+	
+	private void setFaceColor() {
+		for(Face f : this.faces) {
+			f.setColor(this.color);
+		}
+	}
+	
+	private void colorDecay() {
+		double decayFactor = 0.95;
+		for(Face f : faces) {
+			f.setColor(this.color);
+			int r = (int) (this.color.getRed() * decayFactor);
+			int g = (int) (this.color.getGreen() * decayFactor);
+			int b = (int) (this.color.getBlue() * decayFactor);
+			this.color = new Color(r,g,b);
+		}
+	}
+}

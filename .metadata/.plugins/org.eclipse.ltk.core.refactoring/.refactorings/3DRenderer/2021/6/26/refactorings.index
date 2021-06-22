@@ -4,3 +4,5 @@
 1624240019951	Rename package 'entity'
 1624240049983	Rename package 'entity.builder'
 1624254442836	Rename type 'Vector'
+1624262932096	Encapsulate field 'entities'
+1624266480844	Delete element
